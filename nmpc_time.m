@@ -42,14 +42,24 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     f.add(dot(THRUST) == delta_THRUST);
     
     %% Optimal Control Problem
+<<<<<<< HEAD
+    ocp = acado.OCP(0.0, Time, 50);    % Set up the Optimal Control Problem (OCP)
+                                   % Start at 0s, optimize for time in
+                                   % #steps
+=======
     ocp = acado.OCP(0.0, Time);    % Set up the Optimal Control Problem (OCP)
                                    % Start at 0s, optimize for time
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.minimizeMayerTerm(Time);
     
     ocp.subjectTo( f );
     ocp.subjectTo( 'AT_START', x ==  0.0 ); 
     ocp.subjectTo( 'AT_START', y ==  0.0 ); 
+<<<<<<< HEAD
+    ocp.subjectTo( 'AT_START', z ==  0.0 ); 
+=======
     ocp.subjectTo( 'AT_START', z ==  -1.5 ); 
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.subjectTo( 'AT_START', v_x ==  0.0 ); 
     ocp.subjectTo( 'AT_START', v_y ==  0.0 ); 
     ocp.subjectTo( 'AT_START', v_z ==  0.0 ); 
@@ -58,7 +68,11 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     ocp.subjectTo( 'AT_START', psi ==  0.0 ); 
     ocp.subjectTo( 'AT_START', THRUST ==  -4.916 ); 
     
+<<<<<<< HEAD
+    ocp.subjectTo( 'AT_END', x ==  3.0 ); 
+=======
     ocp.subjectTo( 'AT_END', x ==  10.0 ); 
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.subjectTo( 'AT_END', y ==  0.0 ); 
     ocp.subjectTo( 'AT_END', z ==  -1.5 ); 
     ocp.subjectTo( 'AT_END', v_x ==  0.0 ); 
@@ -69,10 +83,17 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     ocp.subjectTo( 'AT_END', psi ==  0.0 ); 
     ocp.subjectTo( 'AT_END', THRUST ==  -4.916  ); 
                               
+<<<<<<< HEAD
+    ocp.subjectTo( -1.6 <= z <= 0 );    
+    ocp.subjectTo( -25*(pi/180) <= phi <= 25*(pi/180) );
+    ocp.subjectTo( -25*(pi/180) <= theta <= 25*(pi/180) );
+    ocp.subjectTo( -25*(pi/180) <= psi <= 25*(pi/180) );
+=======
     ocp.subjectTo( -1.6 <= z <= -1.4 );    
     ocp.subjectTo( -45*(pi/180) <= phi <= 45*(pi/180) );
     ocp.subjectTo( -45*(pi/180) <= theta <= 45*(pi/180) );
     ocp.subjectTo( -45*(pi/180) <= psi <= 45*(pi/180) );
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.subjectTo( -23*SAMPLING_TIME <= delta_phi <= 23*SAMPLING_TIME );
     ocp.subjectTo( -23*SAMPLING_TIME <= delta_theta <= 23*SAMPLING_TIME );
     ocp.subjectTo( -23*SAMPLING_TIME <= delta_psi <= 23*SAMPLING_TIME );
@@ -85,9 +106,18 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
     %% Controller
     algo = acado.OptimizationAlgorithm(ocp);
+<<<<<<< HEAD
+    algo.set( 'KKT_TOLERANCE', 1e-10 );     
+    algo.set('MAX_NUM_ITERATIONS', 400.0 );
+    %algo.set('INTEGRATOR_TYPE', 'INT_RK78');
+    %algo.set( 'INTEGRATOR_TOLERANCE',   1e-8);    
+    %algo.set( 'ABSOLUTE_TOLERANCE',     1e-8);
+    
+=======
     algo.set( 'KKT_TOLERANCE', 1e-10 );     % Set a custom KKT tolerance
    
         
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
 END_ACADO;           % Always end with "END_ACADO".
                      % This will generate a file problemname_ACADO.m. 
                      % Run this file to get your results. You can

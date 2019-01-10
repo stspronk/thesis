@@ -31,6 +31,29 @@ figure;
 
 subplot(2,3,1)
 plot(out.CONTROLS(:,1), out.CONTROLS(:,2), 'r')
+<<<<<<< HEAD
+title('\delta_{\phi}');
+
+subplot(2,3,2)
+plot(out.CONTROLS(:,1), out.CONTROLS(:,3), 'r')
+title('\delta_{\theta}');
+
+subplot(2,3,3)
+plot(out.CONTROLS(:,1), out.CONTROLS(:,4), 'r')
+title('\delta_{\psi}');
+
+subplot(2,3,4)
+plot(out.STATES_SAMPLED(:,1), out.STATES_SAMPLED(:,8), 'r')
+title('\phi');
+
+subplot(2,3,5)
+plot(out.STATES_SAMPLED(:,1), out.STATES_SAMPLED(:,9), 'r')
+title('\theta');
+
+subplot(2,3,6)
+plot(out.STATES_SAMPLED(:,1), out.STATES_SAMPLED(:,10), 'r')
+title('\psi');
+=======
 title('delta_phi');
 
 subplot(2,3,2)
@@ -52,6 +75,7 @@ title('theta');
 subplot(2,3,6)
 plot(out.STATES_SAMPLED(:,1), out.STATES_SAMPLED(:,10), 'r')
 title('psi');
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
 
 
 figure
