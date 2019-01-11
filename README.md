@@ -6,7 +6,7 @@ ACADO TOOLKIT MATLAB INSTALL:
 
 git clone https://github.com/acado/acado.git -b stable ACADOtoolkit
 
-Navigate to the MATLAB installation directory by running:
+Navigate to the MATLAB installation directory by running(IN MATLAB):
 
 cd *ACADO DIRECTORY*/interfaces/matlab/;
 You are now ready to compile the ACADO interface. This compilation will take several minutes but needs to be done only once. Run “make” in your command window:
