@@ -28,7 +28,11 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
 
     %% reference trajectory
+<<<<<<< HEAD
+ ref = [0.0       3.00       0.00     -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916];      % Set up a given reference trajectory
+=======
  ref = [2.0       10.00       0.00     -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916];      % Set up a given reference trajectory
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
 %        2.0       3.00       0.00	  -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916];
 %         3         3.00       6.00	  -1.50      0.00        0.00        0.00     0.00        0.00        (0.5*pi);
 %         4.0       1.00       8.00	  -1.50      0.00        0.00        0.00     0.00        0.00        pi
@@ -87,7 +91,11 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     ocp.minimizeLSQ( Q, h, ref_h );             % Minimize this Least Squares Term
       
     ocp.subjectTo( f );                         % Your OCP is always subject to your 
+<<<<<<< HEAD
+    ocp.subjectTo( -1.6 <= z <= 0 );                  % differential equation
+=======
     ocp.subjectTo( -1.6 <= z <= -1.4 );                  % differential equation
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.subjectTo( -25*(pi/180) <= phi <= 25*(pi/180) );
     ocp.subjectTo( -25*(pi/180) <= theta <= 25*(pi/180) );
     ocp.subjectTo( -25*(pi/180) <= psi <= 25*(pi/180) );
@@ -114,7 +122,12 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
     %% Controller
     algo = acado.RealTimeAlgorithm(ocp, SAMPLING_TIME);
+<<<<<<< HEAD
+    %algo.set('INTEGRATOR_TYPE', 'INT_RK78');
+    algo.set( 'KKT_TOLERANCE', 1e-10 );  
+=======
     algo.set('INTEGRATOR_TYPE', 'INT_RK78');
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     algo.set( 'INTEGRATOR_TOLERANCE',   1e-8);    
     algo.set( 'ABSOLUTE_TOLERANCE',     1e-8);
     algo.set('MAX_NUM_ITERATIONS', 5.0 );
@@ -126,7 +139,11 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     sim = acado.SimulationEnvironment(0.0, SIMULATION_TIME, process, controller);
 
     x0=zeros(1,10);
+<<<<<<< HEAD
+    x0(3)= 0.00;
+=======
     x0(3)=-1.50;
+>>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     x0(10)=-4.916;
     sim.init( x0 )              %starting values of all states
     
