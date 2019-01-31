@@ -1,5 +1,11 @@
-clear all, clc;
+clear all; clc;
 
+x_ref = 4;
+y_ref = 0;
+INTERVALS = 30;
+input_bounds = 1/INTERVALS;
+% for x_ref=1:2
+%     for y_ref=1:1
 BEGIN_ACADO;                                % Always start with "BEGIN_ACADO". 
     
     acadoSet('problemname', 'nmpc_time');        % Set your problemname. If you 
@@ -22,6 +28,7 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     m = 0.5;
     g = 9.81;
     C_d = 0.5;
+    
     %% Model Differential Equations
     f = acado.DifferentialEquation(0.0, Time);       % Set the differential equation object
     
@@ -29,7 +36,7 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     f.add(dot(x) == cos(psi)*v_x - sin(psi)*v_y);
     f.add(dot(y) == cos(psi)*v_y + sin(psi)*v_x);
     f.add(dot(z) == v_z);
-        
+
 %     acceleration in body frame
     f.add(dot(v_x) == sin(theta) * (THRUST/m) - C_d * v_x);
     f.add(dot(v_y) == -sin(phi)*(THRUST/m) - C_d * v_y);
@@ -42,24 +49,15 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     f.add(dot(THRUST) == delta_THRUST);
     
     %% Optimal Control Problem
-<<<<<<< HEAD
-    ocp = acado.OCP(0.0, Time, 50);    % Set up the Optimal Control Problem (OCP)
+    ocp = acado.OCP(0.0, Time, INTERVALS);    % Set up the Optimal Control Problem (OCP)
                                    % Start at 0s, optimize for time in
                                    % #steps
-=======
-    ocp = acado.OCP(0.0, Time);    % Set up the Optimal Control Problem (OCP)
-                                   % Start at 0s, optimize for time
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.minimizeMayerTerm(Time);
     
     ocp.subjectTo( f );
-    ocp.subjectTo( 'AT_START', x ==  0.0 ); 
-    ocp.subjectTo( 'AT_START', y ==  0.0 ); 
-<<<<<<< HEAD
-    ocp.subjectTo( 'AT_START', z ==  0.0 ); 
-=======
+    ocp.subjectTo( 'AT_START', x ==  x_ref ); 
+    ocp.subjectTo( 'AT_START', y ==  y_ref ); 
     ocp.subjectTo( 'AT_START', z ==  -1.5 ); 
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.subjectTo( 'AT_START', v_x ==  0.0 ); 
     ocp.subjectTo( 'AT_START', v_y ==  0.0 ); 
     ocp.subjectTo( 'AT_START', v_z ==  0.0 ); 
@@ -68,11 +66,7 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     ocp.subjectTo( 'AT_START', psi ==  0.0 ); 
     ocp.subjectTo( 'AT_START', THRUST ==  -4.916 ); 
     
-<<<<<<< HEAD
-    ocp.subjectTo( 'AT_END', x ==  3.0 ); 
-=======
-    ocp.subjectTo( 'AT_END', x ==  10.0 ); 
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
+    ocp.subjectTo( 'AT_END', x ==  0.0 ); 
     ocp.subjectTo( 'AT_END', y ==  0.0 ); 
     ocp.subjectTo( 'AT_END', z ==  -1.5 ); 
     ocp.subjectTo( 'AT_END', v_x ==  0.0 ); 
@@ -82,22 +76,15 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     ocp.subjectTo( 'AT_END', theta ==  0.0 ); 
     ocp.subjectTo( 'AT_END', psi ==  0.0 ); 
     ocp.subjectTo( 'AT_END', THRUST ==  -4.916  ); 
-                              
-<<<<<<< HEAD
-    ocp.subjectTo( -1.6 <= z <= 0 );    
-    ocp.subjectTo( -25*(pi/180) <= phi <= 25*(pi/180) );
-    ocp.subjectTo( -25*(pi/180) <= theta <= 25*(pi/180) );
-    ocp.subjectTo( -25*(pi/180) <= psi <= 25*(pi/180) );
-=======
+
     ocp.subjectTo( -1.6 <= z <= -1.4 );    
     ocp.subjectTo( -45*(pi/180) <= phi <= 45*(pi/180) );
     ocp.subjectTo( -45*(pi/180) <= theta <= 45*(pi/180) );
     ocp.subjectTo( -45*(pi/180) <= psi <= 45*(pi/180) );
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
-    ocp.subjectTo( -23*SAMPLING_TIME <= delta_phi <= 23*SAMPLING_TIME );
-    ocp.subjectTo( -23*SAMPLING_TIME <= delta_theta <= 23*SAMPLING_TIME );
-    ocp.subjectTo( -23*SAMPLING_TIME <= delta_psi <= 23*SAMPLING_TIME );
-    ocp.subjectTo( -40*SAMPLING_TIME <= delta_THRUST <= 40*SAMPLING_TIME );
+    ocp.subjectTo( -23*input_bounds <= delta_phi <= 23*input_bounds );
+    ocp.subjectTo( -23*input_bounds <= delta_theta <= 23*input_bounds );
+    ocp.subjectTo( -23*input_bounds <= delta_psi <= 23*input_bounds );
+    ocp.subjectTo( -40*input_bounds <= delta_THRUST <= 40*input_bounds );
 
     ocp.subjectTo( -19.621 <= THRUST <= 0 );
 
@@ -106,18 +93,14 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
     %% Controller
     algo = acado.OptimizationAlgorithm(ocp);
-<<<<<<< HEAD
     algo.set( 'KKT_TOLERANCE', 1e-10 );     
     algo.set('MAX_NUM_ITERATIONS', 400.0 );
-    %algo.set('INTEGRATOR_TYPE', 'INT_RK78');
-    %algo.set( 'INTEGRATOR_TOLERANCE',   1e-8);    
-    %algo.set( 'ABSOLUTE_TOLERANCE',     1e-8);
+%     algo.set('INTEGRATOR_TYPE', 'INT_RK78');
+%     algo.set( 'INTEGRATOR_TOLERANCE',   1e-8);    
+%     algo.set( 'ABSOLUTE_TOLERANCE',     1e-8);
     
-=======
-    algo.set( 'KKT_TOLERANCE', 1e-10 );     % Set a custom KKT tolerance
    
         
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
 END_ACADO;           % Always end with "END_ACADO".
                      % This will generate a file problemname_ACADO.m. 
                      % Run this file to get your results. You can
@@ -129,5 +112,11 @@ END_ACADO;           % Always end with "END_ACADO".
 out = nmpc_time_RUN();                % Run the test. The name of the RUN file
                                             % is problemname_RUN, so in
                                             % this case getting_started_RUN
-                                            
+index_x = ['x' num2str(x_ref)];  
+index_y = ['y' num2str(y_ref)];                                            
+
+output_stack.(index_x).(index_y) = out;
+%     end
+% end
+% save('OPC_TEST_RUN.mat',output_stack)                                            
 draw_nmpc_time

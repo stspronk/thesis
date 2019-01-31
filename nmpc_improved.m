@@ -12,10 +12,10 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
     Control                 delta_phi delta_theta delta_psi delta_THRUST
 
-    OCP_HORIZON=2;
-    HORIZON_INTERVALS=20;
-    SIMULATION_TIME=6.0;
-    SAMPLING_TIME = (OCP_HORIZON/HORIZON_INTERVALS)/1.5;
+    OCP_HORIZON=1;
+    HORIZON_INTERVALS=10;
+    SIMULATION_TIME=12.0;
+    SAMPLING_TIME = (OCP_HORIZON/HORIZON_INTERVALS)/1.1;
     k_F = 6.11*10^-8;
     k_M = 1.5*10^-9;
     L = 0.175;
@@ -28,14 +28,11 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
 
     %% reference trajectory
-<<<<<<< HEAD
- ref = [0.0       3.00       0.00     -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916];      % Set up a given reference trajectory
-=======
- ref = [2.0       10.00       0.00     -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916];      % Set up a given reference trajectory
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
-%        2.0       3.00       0.00	  -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916];
-%         3         3.00       6.00	  -1.50      0.00        0.00        0.00     0.00        0.00        (0.5*pi);
-%         4.0       1.00       8.00	  -1.50      0.00        0.00        0.00     0.00        0.00        pi
+ ref = [0.0       4.00       0.00     -1.50      0.00        0.00        0.00     0.00        0.00        0.00      -4.916;      % Set up a given reference trajectory
+        4.0       7.00       0.00	  -1.50      0.00        0.00        0.00     0.00        0.00        -90*(pi/180)      -4.916;
+        6.0       7.00       3.00	  -1.50      0.00        0.00        0.00     0.00        0.00        -90*(pi/180)      -4.916;
+        8.0       4.00       6.00     -1.50      0.00        0.00        0.00     0.00        0.00        -180*(pi/180)      -4.916]; 
+   
 %         6         -1.00      8.00	  -1.50      0.00        0.00        0.00     0.00        0.00        pi];
 %         1.0       1.00       0.00	  -1.50      0.00        0.00        0.00;
 %         1.0       1.00       0.00	  -1.50      0.00        0.00        0.00;
@@ -71,34 +68,29 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     h={x, y, z, v_x, v_y, v_z, phi, theta,psi, delta_psi};   % the LSQ-Function
 
     Q = eye(10);                             % The weighting matrix 
-    Q(1,1) = 10;
-    Q(2,2) = 10;
-    Q(3,3) = 10;
+    Q(1,1) = 20;
+    Q(2,2) = 20;
+    Q(3,3) = 20;
 
     Q(4,4) = 0;                             %constrain velocities to eliminate overshoot
     Q(5,5) = 0;
     Q(6,6) = 0;
     
     Q(7,7) = 10;
-    Q(8,8) = 1;
-    Q(9,9) = 2;
+    Q(8,8) = 5;
+    Q(9,9) = 20;
     
     Q(10,10) = 0;
 
-    ref_h = zeros(1,10);                        % The reference
-    ref_h(3)=-1.50;
+    ref_h = zeros(1,10);                        % The cost function reference
 
     ocp.minimizeLSQ( Q, h, ref_h );             % Minimize this Least Squares Term
       
     ocp.subjectTo( f );                         % Your OCP is always subject to your 
-<<<<<<< HEAD
-    ocp.subjectTo( -1.6 <= z <= 0 );                  % differential equation
-=======
     ocp.subjectTo( -1.6 <= z <= -1.4 );                  % differential equation
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     ocp.subjectTo( -25*(pi/180) <= phi <= 25*(pi/180) );
     ocp.subjectTo( -25*(pi/180) <= theta <= 25*(pi/180) );
-    ocp.subjectTo( -25*(pi/180) <= psi <= 25*(pi/180) );
+    ocp.subjectTo( -180*(pi/180) <= psi <= 180*(pi/180) );
     ocp.subjectTo( -23*SAMPLING_TIME <= delta_phi <= 23*SAMPLING_TIME );
     ocp.subjectTo( -23*SAMPLING_TIME <= delta_theta <= 23*SAMPLING_TIME );
     ocp.subjectTo( -23*SAMPLING_TIME <= delta_psi <= 23*SAMPLING_TIME );
@@ -122,12 +114,9 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     
     %% Controller
     algo = acado.RealTimeAlgorithm(ocp, SAMPLING_TIME);
-<<<<<<< HEAD
     %algo.set('INTEGRATOR_TYPE', 'INT_RK78');
-    algo.set( 'KKT_TOLERANCE', 1e-10 );  
-=======
+    algo.set( 'KKT_TOLERANCE', 1e-20 );  
     algo.set('INTEGRATOR_TYPE', 'INT_RK78');
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     algo.set( 'INTEGRATOR_TOLERANCE',   1e-8);    
     algo.set( 'ABSOLUTE_TOLERANCE',     1e-8);
     algo.set('MAX_NUM_ITERATIONS', 5.0 );
@@ -139,11 +128,7 @@ BEGIN_ACADO;                                % Always start with "BEGIN_ACADO".
     sim = acado.SimulationEnvironment(0.0, SIMULATION_TIME, process, controller);
 
     x0=zeros(1,10);
-<<<<<<< HEAD
-    x0(3)= 0.00;
-=======
     x0(3)=-1.50;
->>>>>>> 2c74ee34512ed2c9377a395dee51bf258fe49c80
     x0(10)=-4.916;
     sim.init( x0 )              %starting values of all states
     
